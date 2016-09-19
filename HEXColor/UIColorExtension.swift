@@ -13,10 +13,10 @@ import UIKit
  UnableToScanHexValue:      "Scan hex error"
  MismatchedHexStringLength: "Invalid RGB string, number of characters after '#' should be either 3, 4, 6 or 8"
  */
-public enum UIColorInputError : Error {
-    case missingHashMarkAsPrefix,
-    unableToScanHexValue,
-    mismatchedHexStringLength
+public enum UIColorInputError : ErrorType {
+    case MissingHashMarkAsPrefix,
+    UnableToScanHexValue,
+    MismatchedHexStringLength
 }
 
 extension UIColor {
@@ -84,14 +84,13 @@ extension UIColor {
      */
     public convenience init(rgba_throws rgba: String) throws {
         guard rgba.hasPrefix("#") else {
-            throw UIColorInputError.missingHashMarkAsPrefix
+            throw UIColorInputError.MissingHashMarkAsPrefix
         }
         
-        let hexString: String = rgba.substring(from: rgba.characters.index(rgba.startIndex, offsetBy: 1))
-        var hexValue:  UInt32 = 0
-        
-        guard Scanner(string: hexString).scanHexInt32(&hexValue) else {
-                throw UIColorInputError.unableToScanHexValue
+        guard let hexString: String = rgba.substringFromIndex(rgba.startIndex.advancedBy(1)),
+            var   hexValue:  UInt32 = 0
+            where NSScanner(string: hexString).scanHexInt(&hexValue) else {
+                throw UIColorInputError.UnableToScanHexValue
         }
         
         switch (hexString.characters.count) {
@@ -104,7 +103,7 @@ extension UIColor {
         case 8:
             self.init(hex8: hexValue)
         default:
-            throw UIColorInputError.mismatchedHexStringLength
+            throw UIColorInputError.MismatchedHexStringLength
         }
     }
     
@@ -113,12 +112,12 @@ extension UIColor {
      
      - parameter rgba: String value.
      */
-    public convenience init(rgba: String, defaultColor: UIColor = UIColor.clear) {
+    public convenience init(rgba: String, defaultColor: UIColor = UIColor.clearColor()) {
         guard let color = try? UIColor(rgba_throws: rgba) else {
-            self.init(cgColor: defaultColor.cgColor)
+            self.init(CGColor: defaultColor.CGColor)
             return
         }
-        self.init(cgColor: color.cgColor)
+        self.init(CGColor: color.CGColor)
     }
     
     /**
@@ -126,7 +125,7 @@ extension UIColor {
      
      - parameter rgba: Whether the alpha should be included.
      */
-    public func hexString(_ includeAlpha: Bool) -> String {
+    public func hexString(includeAlpha: Bool) -> String {
         var r: CGFloat = 0
         var g: CGFloat = 0
         var b: CGFloat = 0

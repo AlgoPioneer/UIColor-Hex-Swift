@@ -231,11 +231,11 @@ class HEXColorTests: XCTestCase {
     func testStringInputErrorMissingHashMarkAsPrefix() {
         do {
             let _ = try UIColor(rgba_throws: "FFFFFFFF")
-        } catch UIColorInputError.missingHashMarkAsPrefix {
+        } catch UIColorInputError.MissingHashMarkAsPrefix {
             XCTAssertTrue(true)
-        } catch UIColorInputError.unableToScanHexValue {
+        } catch UIColorInputError.UnableToScanHexValue {
             XCTAssertTrue(false)
-        } catch UIColorInputError.mismatchedHexStringLength {
+        } catch UIColorInputError.MismatchedHexStringLength {
             XCTAssertTrue(false)
         } catch {
             XCTAssertTrue(false)
@@ -245,11 +245,11 @@ class HEXColorTests: XCTestCase {
     func testStringInputErrorMismatchedHexStringLength() {
         do {
             let _ = try UIColor(rgba_throws: "#FFFFFFF")
-        } catch UIColorInputError.missingHashMarkAsPrefix {
+        } catch UIColorInputError.MissingHashMarkAsPrefix {
             XCTAssertTrue(false)
-        } catch UIColorInputError.unableToScanHexValue {
+        } catch UIColorInputError.UnableToScanHexValue {
             XCTAssertTrue(false)
-        } catch UIColorInputError.mismatchedHexStringLength {
+        } catch UIColorInputError.MismatchedHexStringLength {
             XCTAssertTrue(true)
         } catch {
             XCTAssertTrue(false)
@@ -259,11 +259,11 @@ class HEXColorTests: XCTestCase {
     func testStringInputErrorUnableToScanHexValue() {
         do {
             let _ = try UIColor(rgba_throws: "#ONMPQRST")
-        } catch UIColorInputError.missingHashMarkAsPrefix {
+        } catch UIColorInputError.MissingHashMarkAsPrefix {
             XCTAssertTrue(false)
-        } catch UIColorInputError.unableToScanHexValue {
+        } catch UIColorInputError.UnableToScanHexValue {
             XCTAssertTrue(true)
-        } catch UIColorInputError.mismatchedHexStringLength {
+        } catch UIColorInputError.MismatchedHexStringLength {
             XCTAssertTrue(false)
         } catch {
             XCTAssertTrue(false)
@@ -274,11 +274,11 @@ class HEXColorTests: XCTestCase {
     
     func testStringDefaultColor() {
         var color = UIColor(rgba: "FFFFFFFF")
-        XCTAssertEqual(color, UIColor.clear)
+        XCTAssertEqual(color, UIColor.clearColor())
         color = UIColor(rgba: "#FFFFFFF")
-        XCTAssertEqual(color, UIColor.clear)
+        XCTAssertEqual(color, UIColor.clearColor())
         color = UIColor(rgba: "#ONMPQRST")
-        XCTAssertEqual(color, UIColor.clear)
+        XCTAssertEqual(color, UIColor.clearColor())
     }
     
     // MARK: - Hex string output
@@ -288,19 +288,20 @@ class HEXColorTests: XCTestCase {
         XCTAssertEqual("#224466", color.hexString(false))
         XCTAssertEqual("#22446688", color.hexString(true))
         
-        let hexColor = UIColor(rgba: "#AABBCCDD", defaultColor: UIColor.yellow);
+        let hexColor = UIColor(rgba: "#AABBCCDD", defaultColor: UIColor.yellowColor());
         XCTAssertEqual("#AABBCC", hexColor.hexString(false))
         XCTAssertEqual("#AABBCCDD", hexColor.hexString(true))
     }
+    
 }
 
 extension UIColor {
-    fileprivate func toUInt8(_ value: CGFloat) -> UInt8 {
+    private func toUInt8(value: CGFloat) -> UInt8 {
         let multiplier = CGFloat(255)
         return UInt8(value * multiplier)
     }
     
-    fileprivate func rgba() -> (red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8) {
+    private func rgba() -> (red: UInt8, green: UInt8, blue: UInt8, alpha: UInt8) {
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
